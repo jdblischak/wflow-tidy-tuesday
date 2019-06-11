@@ -7,4 +7,6 @@ editor_options:
   chunk_output_type: console
 ---
 
-Describe your project.
+Analyses for [#TidyTuesday](https://twitter.com/search?l=&q=%23TidyTuesday&src=typd).
+Datasets and more information are available at
+[rfordatascience/tidytuesday](https://github.com/rfordatascience/tidytuesday).
