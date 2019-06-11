@@ -1,0 +1,168 @@
+---
+title: "2019-06-11-meteorites"
+author: "John Blischak"
+date: "2019-06-11"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+* [Tweet](https://twitter.com/thomas_mock/status/1138076486194348032)
+* [Description](https://github.com/rfordatascience/tidytuesday/blob/master/data/2019/2019-06-11/readme.md)
+* [Data](https://github.com/rfordatascience/tidytuesday/blob/master/data/2019/2019-06-11/meteorites.csv)
+
+## Setup
+
+```{r pkgs, message=FALSE}
+library(lubridate)
+library(tidyverse)
+library(cowplot)
+theme_set(theme_cowplot())
+```
+
+```{r data, message=FALSE}
+m <- read_csv("data/meteorites.csv")
+```
+
+## Exploration
+
+```{r}
+head(m)
+str(m)
+```
+
+Expect `name` and `id` to be unique.
+
+```{r}
+length(m$name) == length(unique(m$name))
+length(m$id) == length(unique(m$id))
+```
+
+"Relict" meteorites are still assigned a class:
+
+```{r}
+table(m$name_type, useNA = "ifany")
+table(m$class[m$name_type == "Relict"])
+```
+
+There are lots of classes. Many are rare.
+
+```{r}
+length(unique(m$class))
+summary(as.numeric(table(m$class)))
+```
+
+`mass` has some missing values, some zeros, and a strong right-skew.
+
+```{r}
+summary(m$mass)
+sum(m$mass == 0, na.rm = TRUE)
+sum(m$mass > 10^5, na.rm = TRUE)
+hist(log(m$mass))
+```
+
+The meteorites are more often found rather than observed to fall
+([source](https://www.permanent.com/meteorites-falls-finds.html)).
+
+```{r}
+table(m$fall, useNA = "ifany")
+```
+
+Most were found after 1900. One was found in the future.
+
+```{r}
+summary(m$year)
+hist(m$year)
+sum(m$year < 1900, na.rm = TRUE)
+sum(m$year > year(now()), na.rm = TRUE)
+```
+
+Some meteorites are missing location data.
+
+```{r}
+summary(m$lat)
+summary(m$long)
+head(m$geolocation)
+sum(is.na(m$geolocation))
+sum(is.na(m$lat) & is.na(m$long) & is.na(m$geolocation))
+```
+
+## Clean
+
+Remove difficult-to-classify meteorites and entries with missing values.
+Only keep meteorites found between 1900 and now.
+
+```{r}
+m_clean <- m %>%
+  na.omit %>%
+  filter(name_type == "Valid",
+         year <=  year(now()),
+         year >= 1900) %>%
+  select(name, class:geolocation)
+nrow(m_clean)
+head(m_clean)
+```
+
+## Questions
+
+* What are the most common classes?
+
+```{r common-classes}
+m_clean %>%
+  group_by(class) %>%
+  summarize(n = n()) %>%
+  arrange(desc(n)) %>%
+  filter(n > 1000)
+```
+
+* Differences in fell versus found meteorites?
+
+```{r fell-vs-found}
+base_fall <- ggplot(m_clean, aes(x = fall)) + geom_boxplot()
+base_fall %+% aes(y = year) + labs(title = "Difference in year")
+base_fall %+% aes(y = mass) + scale_y_log10() + labs(title = "Difference in size")
+```
+
+* Number and size of meteorites per year
+
+```{r num-size-per-year}
+m_per_year <- m_clean %>%
+  group_by(year) %>%
+  summarize(n = n(),
+            mass_med = median(mass))
+head(m_per_year)
+ggplot(m_per_year, aes(x = year, y = n)) + geom_line() + geom_vline(xintercept = 1970, col = "red")
+ggplot(m_per_year, aes(x = year, y = mass_med)) + geom_line() + geom_vline(xintercept = 1970, col = "red")
+```
+
+```{r big-vs-small}
+m_clean$size <- ifelse(m_clean$mass > 10^5, "big", "small")
+m_per_year_size <- m_clean %>%
+  group_by(year, size) %>%
+  summarize(n = n(),
+            mass_med = median(mass))
+head(m_per_year_size)
+ggplot(m_per_year_size, aes(x = year, y = n, color = size)) + geom_smooth() + geom_vline(xintercept = 1970, col = "red")
+```
+
+```{r final, fig.width=8, fig.height=8}
+plot_grid(
+  ggplot(m_per_year, aes(x = year, y = n)) +
+    geom_line() +
+    # geom_vline(xintercept = 1970, col = "red", linetype = "dashed") +
+    labs(title = "Number of meteorites found per year since 1900",
+         x = "Year", y = "Number of meteorites"),
+  ggplot(m_per_year_size, aes(x = year, y = n, color = size)) +
+    geom_smooth(method = "loess") +
+    # geom_vline(xintercept = 1970, col = "red", linetype = "dashed") +
+    labs(title = "Number of meteorites by size",
+         x = "Year", y = "Number of meteorites",
+         subtitle = "(loess smoothing)") +
+    theme(legend.position = "bottom") +
+    scale_color_brewer(name = "Mass (grams)",
+                       labels = c("> 100,000", "< 100,000"), palette = "Dark2"),
+  ncol = 1
+)
+```
