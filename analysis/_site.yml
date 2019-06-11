@@ -1,7 +1,7 @@
-name: "wflow-tidy-tuesday"
+name: wflow-tidy-tuesday
 output_dir: ../docs
 navbar:
-  title: "wflow-tidy-tuesday"
+  title: wflow-tidy-tuesday
   left:
   - text: Home
     href: index.html
@@ -9,6 +9,10 @@ navbar:
     href: about.html
   - text: License
     href: license.html
+  right:
+  - icon: fa-github
+    text: Source code
+    href: https://github.com/jdblischak/wflow-tidy-tuesday
 output:
   workflowr::wflow_html:
     toc: yes
