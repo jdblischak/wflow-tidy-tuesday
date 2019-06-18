@@ -17,7 +17,7 @@ editor_options:
 ## Setup
 
 ```{r pkgs, message=FALSE}
-library(lubridate)
+library(entropy)
 library(tidyverse)
 library(cowplot)
 theme_set(theme_cowplot())
@@ -185,7 +185,7 @@ By species
 ```{r entropy-species}
 p_entropy_species <- birds %>%
   group_by(year) %>%
-  summarize(entropy = entropy::entropy(how_many_counted)) %>%
+  summarize(entropy = entropy(how_many_counted)) %>%
   ggplot(aes(x = year, y = entropy)) + geom_line() +
   labs(x = "Year", y = "Shannon diversity",
        title = "Species diversity per year")
@@ -206,7 +206,7 @@ p_entropy_genus <- birds %>%
   summarize(n_genus = sum(how_many_counted)) %>%
   ungroup() %>%
   group_by(year) %>%
-  summarize(entropy = entropy::entropy(n_genus)) %>%
+  summarize(entropy = entropy(n_genus)) %>%
   ggplot(aes(x = year, y = entropy)) + geom_line() +
   labs(x = "Year", y = "Shannon diversity",
        title = "Genus diversity per year")
