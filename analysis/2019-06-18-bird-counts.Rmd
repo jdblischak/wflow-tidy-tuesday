@@ -1,0 +1,219 @@
+---
+title: "2019-06-18-bird-counts"
+author: "John Blischak"
+date: "2019-06-18"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+* [Tweet](https://twitter.com/thomas_mock/status/1140652207156736000)
+* [Description](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-06-18)
+* [Data](https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-06-18/bird_counts.csv)
+* [Source](https://sharleenw.rbind.io/post/hamilton_cbc_part_1/hamilton-christmas-bird-count-part-1/)
+
+## Setup
+
+```{r pkgs, message=FALSE}
+library(lubridate)
+library(tidyverse)
+library(cowplot)
+theme_set(theme_cowplot())
+```
+
+```{r data, message=FALSE}
+birds <- read_csv("data/bird_counts.csv")
+```
+
+## Exploration
+
+```{r}
+head(birds)
+str(birds)
+```
+
+### year
+
+```{r year}
+head(birds$year)
+summary(birds$year)
+birds %>% count(year) %>%
+  ggplot(aes(x = year, y = n)) + geom_point()
+stopifnot(table(birds$year) == 199)
+```
+
+### species
+
+> The species name in English and the scientific name
+
+```{r species}
+head(birds$species)
+sum(is.na(birds$species))
+birds %>% count(species) %>% select(n) %>% unique
+stopifnot(table(birds$species) == 94)
+```
+
+### species_latin
+
+>  	The species name in latin
+
+```{r species_latin}
+head(birds$species_latin)
+sum(is.na(birds$species_latin))
+birds %>% count(species_latin) %>% select(n) %>% unique
+stopifnot(table(birds$species_latin) == 94)
+```
+
+## how_many_counted
+
+> Actual raw bird count observed
+
+```{r how_many_counted}
+head(birds$how_many_counted)
+summary(birds$how_many_counted)
+hist(birds$how_many_counted)
+birds %>% filter(how_many_counted > 50000)
+```
+
+### total_hours
+
+> Total hours spent observing
+
+```{r total_hours}
+head(birds$total_hours)
+summary(birds$total_hours)
+hist(birds$total_hours)
+# The missing data points are from the earlier years
+table(is.na(birds$total_hours), birds$year)
+```
+
+### how_many_counted_by_hour
+
+> How many birds were counted divided by the number of person-hours that year
+
+```{r how_many_counted_by_hour}
+head(birds$how_many_counted_by_hour)
+summary(birds$how_many_counted_by_hour)
+hist(birds$how_many_counted_by_hour)
+birds %>% filter(!is.na(how_many_counted_by_hour),
+                 how_many_counted_by_hour > 300)
+stopifnot(is.na(birds$total_hours) == is.na(birds$how_many_counted_by_hour))
+```
+
+Is there a relationship between the number of birds counted and the total number
+of person hours?
+
+```{r}
+ggplot(birds, aes(x = total_hours, y = how_many_counted)) +
+  geom_point()
+```
+
+How many hours per year?
+
+```{r}
+birds %>%
+  group_by(year) %>%
+  summarize(total_hours = unique(total_hours)) %>%
+  ggplot(aes(x = year, y = total_hours)) +
+  geom_point()
+```
+
+What about the number of distinct species per year?
+
+```{r}
+birds %>%
+  group_by(year) %>%
+  summarize(n_species = sum(how_many_counted > 0)) %>%
+  ggplot(aes(x = year, y = n_species)) +
+  geom_point()
+```
+
+Is there a relationship between the number of distinct species counted and the
+total number of person hours?
+
+```{r}
+birds %>%
+  group_by(year) %>%
+  summarize(n_species = sum(how_many_counted > 0),
+            total_hours = unique(total_hours)) %>%
+  ggplot(aes(x = total_hours, y = n_species)) +
+  geom_point()
+```
+
+```{r}
+birds %>% na.omit() %>%
+  mutate(concordance = how_many_counted / total_hours == how_many_counted_by_hour) %>%
+  select(concordance) %>%
+  summarize(matched = sum(concordance), n = n())
+```
+
+How many years has each species been observed?
+
+```{r}
+birds %>%
+  group_by(species) %>%
+  summarize(n_years = sum(how_many_counted > 0)) %>%
+  ggplot(aes(x = n_years)) +
+  geom_histogram()
+```
+
+```{r}
+starling <- birds %>%
+  filter(species == "European Starling")
+ggplot(starling, aes(x = year, y = how_many_counted)) + geom_line()
+ggplot(starling, aes(x = year, y = how_many_counted_by_hour)) + geom_line()
+```
+
+
+
+```{r}
+b <- birds %>%
+  na.omit() %>%
+  filter(year >= 1939) %>%
+  mutate(observed = how_many_counted > 0,
+         genus = str_split_fixed(species_latin, " ", 2)[, 1]) %>%
+  select(year, species, species_latin, genus, observed, how_many_counted_by_hour)
+head(b)
+```
+
+## Entropy
+
+By species
+
+```{r entropy-species}
+p_entropy_species <- birds %>%
+  group_by(year) %>%
+  summarize(entropy = entropy::entropy(how_many_counted)) %>%
+  ggplot(aes(x = year, y = entropy)) + geom_line() +
+  labs(x = "Year", y = "Shannon diversity",
+       title = "Species diversity per year")
+p_entropy_species
+```
+
+By genus
+
+```{r}
+length(unique(birds$species_latin))
+length(unique(str_split_fixed(birds$species_latin, " ", 2)[, 1]))
+```
+
+```{r entropy-genus}
+p_entropy_genus <- birds %>%
+  mutate(genus = str_split_fixed(species_latin, " ", 2)[, 1]) %>%
+  group_by(year, genus) %>%
+  summarize(n_genus = sum(how_many_counted)) %>%
+  ungroup() %>%
+  group_by(year) %>%
+  summarize(entropy = entropy::entropy(n_genus)) %>%
+  ggplot(aes(x = year, y = entropy)) + geom_line() +
+  labs(x = "Year", y = "Shannon diversity",
+       title = "Genus diversity per year")
+p_entropy_genus
+```
+
+```{r final, fig.width=8, fig.height=4}
+plot_grid(p_entropy_species + ylim(0.5, 3.5),
+          p_entropy_genus + ylim(0.5, 3.5))
+```
