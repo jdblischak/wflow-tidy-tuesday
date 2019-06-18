@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="John Blischak" />
+
+<meta name="date" content="2019-06-18" />
+
+<title>2019-06-18-bird-counts</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">wflow-tidy-tuesday</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/jdblischak/wflow-tidy-tuesday">
+    <span class="fa fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">2019-06-18-bird-counts</h1>
+<h4 class="author">John Blischak</h4>
+<h4 class="date">2019-06-18</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2019-06-18
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>wflow-tidy-tuesday/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.4.0). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20190611code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20190611)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20190611code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20190611)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjdblischakwflowtidytuesdaytreeabd8dd4e1392a621d583b39fe8a57cdf621f38c0targetblankabd8dd4a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jdblischak/wflow-tidy-tuesday/tree/abd8dd4e1392a621d583b39fe8a57cdf621f38c0" target="_blank">abd8dd4</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjdblischakwflowtidytuesdaytreeabd8dd4e1392a621d583b39fe8a57cdf621f38c0targetblankabd8dd4a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the R Markdown and HTML files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view them.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jdblischak/wflow-tidy-tuesday/blob/abd8dd4e1392a621d583b39fe8a57cdf621f38c0/analysis/2019-06-18-bird-counts.Rmd" target="_blank">abd8dd4</a>
+</td>
+<td>
+John Blischak
+</td>
+<td>
+2019-06-18
+</td>
+<td>
+Christmas bird counts
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<ul>
+<li><a href="https://twitter.com/thomas_mock/status/1140652207156736000">Tweet</a></li>
+<li><a href="https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-06-18">Description</a></li>
+<li><a href="https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-06-18/bird_counts.csv">Data</a></li>
+<li><a href="https://sharleenw.rbind.io/post/hamilton_cbc_part_1/hamilton-christmas-bird-count-part-1/">Source</a></li>
+</ul>
+</div>
+<div id="setup" class="section level2">
+<h2>Setup</h2>
+<pre class="r"><code>library(lubridate)
+library(tidyverse)
+library(cowplot)
+theme_set(theme_cowplot())</code></pre>
+<pre class="r"><code>birds &lt;- read_csv(&quot;data/bird_counts.csv&quot;)</code></pre>
+</div>
+<div id="exploration" class="section level2">
+<h2>Exploration</h2>
+<pre class="r"><code>head(birds)</code></pre>
+<pre><code># A tibble: 6 x 6
+   year species species_latin how_many_counted total_hours how_many_counte…
+  &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;                    &lt;dbl&gt;       &lt;dbl&gt;            &lt;dbl&gt;
+1  1921 Americ… Botaurus len…                0           8                0
+2  1921 Americ… Anas rubripes                0           8                0
+3  1921 Americ… Fulica ameri…                0           8                0
+4  1921 Americ… Corvus brach…                0           8                0
+5  1921 Americ… Spinus trist…                0           8                0
+6  1921 Americ… Falco sparve…                0           8                0</code></pre>
+<pre class="r"><code>str(birds)</code></pre>
+<pre><code>Classes &#39;spec_tbl_df&#39;, &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;:    18706 obs. of  6 variables:
+ $ year                    : num  1921 1921 1921 1921 1921 ...
+ $ species                 : chr  &quot;American Bittern&quot; &quot;American Black Duck&quot; &quot;American Coot&quot; &quot;American Crow&quot; ...
+ $ species_latin           : chr  &quot;Botaurus lentiginosus&quot; &quot;Anas rubripes&quot; &quot;Fulica americana&quot; &quot;Corvus brachyrhynchos&quot; ...
+ $ how_many_counted        : num  0 0 0 0 0 0 0 1 0 12 ...
+ $ total_hours             : num  8 8 8 8 8 8 8 8 8 8 ...
+ $ how_many_counted_by_hour: num  0 0 0 0 0 0 0 0.125 0 1.5 ...
+ - attr(*, &quot;spec&quot;)=
+  .. cols(
+  ..   year = col_double(),
+  ..   species = col_character(),
+  ..   species_latin = col_character(),
+  ..   how_many_counted = col_double(),
+  ..   total_hours = col_double(),
+  ..   how_many_counted_by_hour = col_double()
+  .. )</code></pre>
+<div id="year" class="section level3">
+<h3>year</h3>
+<pre class="r"><code>head(birds$year)</code></pre>
+<pre><code>[1] 1921 1921 1921 1921 1921 1921</code></pre>
+<pre class="r"><code>summary(birds$year)</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   1921    1947    1970    1970    1994    2017 </code></pre>
+<pre class="r"><code>birds %&gt;% count(year) %&gt;%
+  ggplot(aes(x = year, y = n)) + geom_point()</code></pre>
+<p><img src="figure/2019-06-18-bird-counts.Rmd/year-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>stopifnot(table(birds$year) == 199)</code></pre>
+</div>
+<div id="species" class="section level3">
+<h3>species</h3>
+<blockquote>
+<p>The species name in English and the scientific name</p>
+</blockquote>
+<pre class="r"><code>head(birds$species)</code></pre>
+<pre><code>[1] &quot;American Bittern&quot;    &quot;American Black Duck&quot; &quot;American Coot&quot;      
+[4] &quot;American Crow&quot;       &quot;American Goldfinch&quot;  &quot;American Kestrel&quot;   </code></pre>
+<pre class="r"><code>sum(is.na(birds$species))</code></pre>
+<pre><code>[1] 0</code></pre>
+<pre class="r"><code>birds %&gt;% count(species) %&gt;% select(n) %&gt;% unique</code></pre>
+<pre><code># A tibble: 1 x 1
+      n
+  &lt;int&gt;
+1    94</code></pre>
+<pre class="r"><code>stopifnot(table(birds$species) == 94)</code></pre>
+</div>
+<div id="species_latin" class="section level3">
+<h3>species_latin</h3>
+<blockquote>
+<p>The species name in latin</p>
+</blockquote>
+<pre class="r"><code>head(birds$species_latin)</code></pre>
+<pre><code>[1] &quot;Botaurus lentiginosus&quot; &quot;Anas rubripes&quot;         &quot;Fulica americana&quot;     
+[4] &quot;Corvus brachyrhynchos&quot; &quot;Spinus tristis&quot;        &quot;Falco sparverius&quot;     </code></pre>
+<pre class="r"><code>sum(is.na(birds$species_latin))</code></pre>
+<pre><code>[1] 0</code></pre>
+<pre class="r"><code>birds %&gt;% count(species_latin) %&gt;% select(n) %&gt;% unique</code></pre>
+<pre><code># A tibble: 1 x 1
+      n
+  &lt;int&gt;
+1    94</code></pre>
+<pre class="r"><code>stopifnot(table(birds$species_latin) == 94)</code></pre>
+</div>
+</div>
+<div id="how_many_counted" class="section level2">
+<h2>how_many_counted</h2>
+<blockquote>
+<p>Actual raw bird count observed</p>
+</blockquote>
+<pre class="r"><code>head(birds$how_many_counted)</code></pre>
+<pre><code>[1] 0 0 0 0 0 0</code></pre>
+<pre class="r"><code>summary(birds$how_many_counted)</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    0.0     0.0     0.0   193.5     5.0 73000.0 </code></pre>
+<pre class="r"><code>hist(birds$how_many_counted)</code></pre>
+<p><img src="figure/2019-06-18-bird-counts.Rmd/how_many_counted-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>birds %&gt;% filter(how_many_counted &gt; 50000)</code></pre>
+<pre><code># A tibble: 8 x 6
+   year species species_latin how_many_counted total_hours how_many_counte…
+  &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;                    &lt;dbl&gt;       &lt;dbl&gt;            &lt;dbl&gt;
+1  1979 Europe… Sturnus vulg…            65000         171             380.
+2  1980 Europe… Sturnus vulg…            73000         186             392.
+3  1981 Europe… Sturnus vulg…            65000         167             389.
+4  1982 Europe… Sturnus vulg…            72000         164             439.
+5  1983 Europe… Sturnus vulg…            70000         168             417.
+6  1984 Europe… Sturnus vulg…            71000         178             399.
+7  1990 Europe… Sturnus vulg…            66000         164             402.
+8  1992 Europe… Sturnus vulg…            59600         167             357.</code></pre>
+<div id="total_hours" class="section level3">
+<h3>total_hours</h3>
+<blockquote>
+<p>Total hours spent observing</p>
+</blockquote>
+<pre class="r"><code>head(birds$total_hours)</code></pre>
+<pre><code>[1] 8 8 8 8 8 8</code></pre>
+<pre class="r"><code>summary(birds$total_hours)</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+    8.0   149.5   171.0   170.8   203.8   251.0    3781 </code></pre>
+<pre class="r"><code>hist(birds$total_hours)</code></pre>
+<p><img src="figure/2019-06-18-bird-counts.Rmd/total_hours-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># The missing data points are from the earlier years
+table(is.na(birds$total_hours), birds$year)</code></pre>
+<pre><code>       
+        1921 1922 1924 1925 1926 1928 1930 1931 1932 1933 1934 1935 1936
+  FALSE  199    0    0    0    0    0    0    0    0    0    0    0    0
+  TRUE     0  199  199  199  199  199  199  199  199  199  199  199  199
+       
+        1937 1938 1939 1940 1941 1942 1943 1944 1945 1946 1947 1948 1949
+  FALSE    0    0  199  199    0  199  199  199    0  199    0    0    0
+  TRUE   199  199    0    0  199    0    0    0  199    0  199  199  199
+       
+        1950 1951 1952 1953 1954 1955 1956 1957 1958 1959 1960 1961 1962
+  FALSE  199  199  199  199  199  199  199  199  199  199  199  199  199
+  TRUE     0    0    0    0    0    0    0    0    0    0    0    0    0
+       
+        1963 1964 1965 1966 1967 1968 1969 1970 1971 1972 1973 1974 1975
+  FALSE  199  199  199  199  199  199  199  199  199  199  199  199  199
+  TRUE     0    0    0    0    0    0    0    0    0    0    0    0    0
+       
+        1976 1977 1978 1979 1980 1981 1982 1983 1984 1985 1986 1987 1988
+  FALSE  199  199  199  199  199  199  199  199  199  199  199  199  199
+  TRUE     0    0    0    0    0    0    0    0    0    0    0    0    0
+       
+        1989 1990 1991 1992 1993 1994 1995 1996 1997 1998 1999 2000 2001
+  FALSE  199  199  199  199  199  199  199  199  199  199  199  199  199
+  TRUE     0    0    0    0    0    0    0    0    0    0    0    0    0
+       
+        2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014
+  FALSE  199  199  199  199  199  199  199  199  199  199  199  199  199
+  TRUE     0    0    0    0    0    0    0    0    0    0    0    0    0
+       
+        2015 2016 2017
+  FALSE  199  199  199
+  TRUE     0    0    0</code></pre>
+</div>
+<div id="how_many_counted_by_hour" class="section level3">
+<h3>how_many_counted_by_hour</h3>
+<blockquote>
+<p>How many birds were counted divided by the number of person-hours that year</p>
+</blockquote>
+<pre class="r"><code>head(birds$how_many_counted_by_hour)</code></pre>
+<pre><code>[1] 0 0 0 0 0 0</code></pre>
+<pre class="r"><code>summary(birds$how_many_counted_by_hour)</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+  0.000   0.000   0.000   1.336   0.051 439.024    3781 </code></pre>
+<pre class="r"><code>hist(birds$how_many_counted_by_hour)</code></pre>
+<p><img src="figure/2019-06-18-bird-counts.Rmd/how_many_counted_by_hour-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>birds %&gt;% filter(!is.na(how_many_counted_by_hour),
+                 how_many_counted_by_hour &gt; 300)</code></pre>
+<pre><code># A tibble: 8 x 6
+   year species species_latin how_many_counted total_hours how_many_counte…
+  &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;                    &lt;dbl&gt;       &lt;dbl&gt;            &lt;dbl&gt;
+1  1979 Europe… Sturnus vulg…            65000         171             380.
+2  1980 Europe… Sturnus vulg…            73000         186             392.
+3  1981 Europe… Sturnus vulg…            65000         167             389.
+4  1982 Europe… Sturnus vulg…            72000         164             439.
+5  1983 Europe… Sturnus vulg…            70000         168             417.
+6  1984 Europe… Sturnus vulg…            71000         178             399.
+7  1990 Europe… Sturnus vulg…            66000         164             402.
+8  1992 Europe… Sturnus vulg…            59600         167             357.</code></pre>
+<pre class="r"><code>stopifnot(is.na(birds$total_hours) == is.na(birds$how_many_counted_by_hour))</code></pre>
+<p>Is there a relationship between the number of birds counted and the total number of person hours?</p>
+<pre class="r"><code>ggplot(birds, aes(x = total_hours, y = how_many_counted)) +
+  geom_point()</code></pre>
+<pre><code>Warning: Removed 3781 rows containing missing values (geom_point).</code></pre>
+<p><img src="figure/2019-06-18-bird-counts.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>How many hours per year?</p>
+<pre class="r"><code>birds %&gt;%
+  group_by(year) %&gt;%
+  summarize(total_hours = unique(total_hours)) %&gt;%
+  ggplot(aes(x = year, y = total_hours)) +
+  geom_point()</code></pre>
+<pre><code>Warning: Removed 19 rows containing missing values (geom_point).</code></pre>
+<p><img src="figure/2019-06-18-bird-counts.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>What about the number of distinct species per year?</p>
+<pre class="r"><code>birds %&gt;%
+  group_by(year) %&gt;%
+  summarize(n_species = sum(how_many_counted &gt; 0)) %&gt;%
+  ggplot(aes(x = year, y = n_species)) +
+  geom_point()</code></pre>
+<p><img src="figure/2019-06-18-bird-counts.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Is there a relationship between the number of distinct species counted and the total number of person hours?</p>
+<pre class="r"><code>birds %&gt;%
+  group_by(year) %&gt;%
+  summarize(n_species = sum(how_many_counted &gt; 0),
+            total_hours = unique(total_hours)) %&gt;%
+  ggplot(aes(x = total_hours, y = n_species)) +
+  geom_point()</code></pre>
+<pre><code>Warning: Removed 19 rows containing missing values (geom_point).</code></pre>
+<p><img src="figure/2019-06-18-bird-counts.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>birds %&gt;% na.omit() %&gt;%
+  mutate(concordance = how_many_counted / total_hours == how_many_counted_by_hour) %&gt;%
+  select(concordance) %&gt;%
+  summarize(matched = sum(concordance), n = n())</code></pre>
+<pre><code># A tibble: 1 x 2
+  matched     n
+    &lt;int&gt; &lt;int&gt;
+1   14925 14925</code></pre>
+<p>How many years has each species been observed?</p>
+<pre class="r"><code>birds %&gt;%
+  group_by(species) %&gt;%
+  summarize(n_years = sum(how_many_counted &gt; 0)) %&gt;%
+  ggplot(aes(x = n_years)) +
+  geom_histogram()</code></pre>
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="figure/2019-06-18-bird-counts.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>starling &lt;- birds %&gt;%
+  filter(species == &quot;European Starling&quot;)
+ggplot(starling, aes(x = year, y = how_many_counted)) + geom_line()</code></pre>
+<p><img src="figure/2019-06-18-bird-counts.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(starling, aes(x = year, y = how_many_counted_by_hour)) + geom_line()</code></pre>
+<p><img src="figure/2019-06-18-bird-counts.Rmd/unnamed-chunk-8-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>b &lt;- birds %&gt;%
+  na.omit() %&gt;%
+  filter(year &gt;= 1939) %&gt;%
+  mutate(observed = how_many_counted &gt; 0,
+         genus = str_split_fixed(species_latin, &quot; &quot;, 2)[, 1]) %&gt;%
+  select(year, species, species_latin, genus, observed, how_many_counted_by_hour)
+head(b)</code></pre>
+<pre><code># A tibble: 6 x 6
+   year species       species_latin     genus  observed how_many_counted_b…
+  &lt;dbl&gt; &lt;chr&gt;         &lt;chr&gt;             &lt;chr&gt;  &lt;lgl&gt;                  &lt;dbl&gt;
+1  1939 American Bit… Botaurus lentigi… Botau… FALSE                 0     
+2  1939 American Bla… Anas rubripes     Anas   TRUE                  2.98  
+3  1939 American Coot Fulica americana  Fulica FALSE                 0     
+4  1939 American Crow Corvus brachyrhy… Corvus FALSE                 0     
+5  1939 American Gol… Spinus tristis    Spinus FALSE                 0     
+6  1939 American Kes… Falco sparverius  Falco  TRUE                  0.0370</code></pre>
+</div>
+</div>
+<div id="entropy" class="section level2">
+<h2>Entropy</h2>
+<p>By species</p>
+<pre class="r"><code>p_entropy_species &lt;- birds %&gt;%
+  group_by(year) %&gt;%
+  summarize(entropy = entropy::entropy(how_many_counted)) %&gt;%
+  ggplot(aes(x = year, y = entropy)) + geom_line() +
+  labs(x = &quot;Year&quot;, y = &quot;Shannon diversity&quot;,
+       title = &quot;Species diversity per year&quot;)
+p_entropy_species</code></pre>
+<p><img src="figure/2019-06-18-bird-counts.Rmd/entropy-species-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>By genus</p>
+<pre class="r"><code>length(unique(birds$species_latin))</code></pre>
+<pre><code>[1] 199</code></pre>
+<pre class="r"><code>length(unique(str_split_fixed(birds$species_latin, &quot; &quot;, 2)[, 1]))</code></pre>
+<pre><code>[1] 127</code></pre>
+<pre class="r"><code>p_entropy_genus &lt;- birds %&gt;%
+  mutate(genus = str_split_fixed(species_latin, &quot; &quot;, 2)[, 1]) %&gt;%
+  group_by(year, genus) %&gt;%
+  summarize(n_genus = sum(how_many_counted)) %&gt;%
+  ungroup() %&gt;%
+  group_by(year) %&gt;%
+  summarize(entropy = entropy::entropy(n_genus)) %&gt;%
+  ggplot(aes(x = year, y = entropy)) + geom_line() +
+  labs(x = &quot;Year&quot;, y = &quot;Shannon diversity&quot;,
+       title = &quot;Genus diversity per year&quot;)
+p_entropy_genus</code></pre>
+<p><img src="figure/2019-06-18-bird-counts.Rmd/entropy-genus-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_grid(p_entropy_species + ylim(0.5, 3.5),
+          p_entropy_genus + ylim(0.5, 3.5))</code></pre>
+<p><img src="figure/2019-06-18-bird-counts.Rmd/final-1.png" width="768" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.6.0 (2019-04-26)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 18.04.2 LTS
+
+Matrix products: default
+BLAS:   /usr/lib/x86_64-linux-gnu/atlas/libblas.so.3.10.3
+LAPACK: /usr/lib/x86_64-linux-gnu/atlas/liblapack.so.3.10.3
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] cowplot_0.9.4   forcats_0.4.0   stringr_1.4.0   dplyr_0.8.1    
+ [5] purrr_0.3.2     readr_1.3.1     tidyr_0.8.3     tibble_2.1.3   
+ [9] ggplot2_3.1.1   tidyverse_1.2.1 lubridate_1.7.4
+
+loaded via a namespace (and not attached):
+ [1] tidyselect_0.2.5 xfun_0.7         haven_2.1.0      lattice_0.20-38 
+ [5] vctrs_0.1.0      colorspace_1.4-1 generics_0.0.2   htmltools_0.3.6 
+ [9] yaml_2.2.0       utf8_1.1.4       rlang_0.3.4      pillar_1.4.1    
+[13] glue_1.3.1       withr_2.1.2      entropy_1.2.1    modelr_0.1.4    
+[17] readxl_1.3.1     plyr_1.8.4       munsell_0.5.0    gtable_0.3.0    
+[21] workflowr_1.4.0  cellranger_1.1.0 rvest_0.3.4      evaluate_0.14   
+[25] labeling_0.3     knitr_1.23       fansi_0.4.0      broom_0.5.2     
+[29] Rcpp_1.0.1       scales_1.0.0     backports_1.1.4  jsonlite_1.6    
+[33] fs_1.3.1         hms_0.4.2        digest_0.6.19    stringi_1.4.3   
+[37] grid_3.6.0       rprojroot_1.2    cli_1.1.0        tools_3.6.0     
+[41] magrittr_1.5     lazyeval_0.2.2   zeallot_0.1.0    crayon_1.3.4    
+[45] whisker_0.3-2    pkgconfig_2.0.2  xml2_1.2.0       assertthat_0.2.1
+[49] rmarkdown_1.13.4 httr_1.4.0       rstudioapi_0.10  R6_2.4.0        
+[53] nlme_3.1-140     git2r_0.25.2     compiler_3.6.0  </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
