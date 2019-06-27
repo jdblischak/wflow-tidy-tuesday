@@ -1,0 +1,122 @@
+---
+title: "2019-06-25-ufos"
+author: "John Blischak"
+date: "2019-06-25"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+Conclusion: Encounter length appears to be random.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.width = 10, fig.height = 5)
+```
+
+## Introduction
+
+* [Tweet](https://twitter.com/thomas_mock/status/1143175380959973377)
+* [Description](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-06-25)
+* [Data](https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-06-25/ufo_sightings.csv)
+* Sources: [NUFORC](http://www.nuforc.org/), [Sigmond Axel](https://github.com/planetsig/ufo-reports)
+
+## Setup
+
+```{r pkgs, message=FALSE}
+library(lubridate)
+library(tidyverse)
+library(cowplot)
+theme_set(theme_cowplot())
+```
+
+```{r data, message=FALSE}
+ufo_sightings <- readr::read_csv("data/ufo_sightings.csv")
+```
+
+## Cleaning
+
+```{r cleaning}
+ufo <- na.omit(ufo_sightings)  %>%
+  mutate(date = parse_date_time(date_documented, "m/d/Y"),
+         year = year(date),
+         time = str_extract(date_time, "[0-9]{2}:[0-9]{2}"),
+         time = str_replace(time, ":", ""),
+         time = as.numeric(time),
+         night = time <= 800 | time >= 2000,
+         log_length = log10(encounter_length))
+```
+
+## Encounter length
+
+```{r lm}
+y <- ufo[, "log_length"]
+x <- ufo %>% select(state, country, ufo_shape, year, time, night, latitude, longitude)
+calc_r2 <- function(i) summary(lm(y[[1]] ~ x[[i]]))$adj.r.squared
+r2 <- vapply(seq_along(x), calc_r2, numeric(1))
+names(r2) <- colnames(x)
+r2
+```
+
+```{r base-plot}
+p <- ggplot(ufo, aes(y = log_length)) +
+  labs(y = "Encounter length (seconds, log10)")
+```
+
+Shape of the UFO
+
+```{r encounter-length-shape}
+p_shape <- p %+% aes(x = reorder(ufo_shape, encounter_length, FUN = median)) +
+  geom_boxplot() +
+  labs(x = "UFO Shape", title = "Shape of the UFO") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+p_shape
+```
+
+Territory
+
+```{r encounter-length-territory}
+p_country <- p %+% aes(x = reorder(country, encounter_length, FUN = median)) +
+  geom_boxplot() +
+  labs(x = "Country", title = "Country")
+states <- ufo %>%
+  group_by(state) %>%
+  summarize(median = median(log_length)) %>%
+  arrange(median) %>%
+  select(state) %>%
+  unlist()
+states <- states[c(1:5, (length(states) - 5):(length(states)))]
+ufo_states <- ufo %>% filter(state %in% states)
+p_state <- ggplot(ufo_states,
+                  aes(x = reorder(state, encounter_length, FUN = median),
+                      y = log_length)) +
+  geom_boxplot() +
+  labs(x = "State", title = "State",
+       y = "Encounter length (seconds, log10)") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+plot_grid(p_country, p_state)
+```
+
+Time
+
+```{r encounter-length-time}
+p_year <- p %+% aes(x = year) +
+  geom_point() +
+  labs(x = "Year", title = "Year of encounter")
+p_time <- p %+% aes(x = time) +
+  geom_point() +
+  labs(x = "Time (24 hr)", title = "Time of day")
+p_night <- p %+% aes(x = night) +
+  geom_boxplot() +
+  labs(x = "AM or PM", title = "Day or night?")
+plot_grid(p_year, p_time, p_night, nrow = 1)
+```
+
+```{r encounter-length-latlong}
+p_lat <- p %+% aes(x = latitude) +
+  geom_point() +
+  labs(x = "Latitude", title = "Latitude")
+p_lon <- p %+% aes(x = longitude) +
+  geom_point() +
+  labs(x = "Longitude", title = "Longitude")
+plot_grid(p_lat, p_lon)
+```
