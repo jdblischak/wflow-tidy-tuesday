@@ -10,5 +10,6 @@ editor_options:
 
 Analyses:
 
+* 2019-06-25 - [UFOs](2019-06-25-ufos.html)
 * 2019-06-18 - [bird counts](2019-06-18-bird-counts.html)
 * 2019-06-11 - [meteorites](2019-06-11-meteorites.html)
