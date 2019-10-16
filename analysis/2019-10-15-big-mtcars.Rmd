@@ -1,0 +1,77 @@
+---
+title: "2019-10-15-big-mtcars"
+author: "John Blischak"
+date: "2019-10-16"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.width = 8, fig.height = 8)
+```
+
+## Introduction
+
+Sooner rather than later I'm going to need to buy a new car. And let's face it,
+it'll probably be a van. What brand of van should I buy? I explore this below
+using this week's #TidyTuesday data.
+
+**Conclusion:** I should look at Chrysler vans for saving gas and producing
+fewer greenhouse gases.
+
+* [Tweet](https://twitter.com/thomas_mock/status/1183766578397110274)
+* [Description](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-10-15)
+* [Data](https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-10-15/big_epa_cars.csv)
+* Sources: [Data dictionary](https://www.fueleconomy.gov/feg/ws/index.shtml#fuelType1), [Blog post by Ellis Hughes](https://thebioengineer.github.io/thebioengineer.github.io/2019/09/10/big-mtcars/)
+
+## Setup
+
+```{r pkgs, message=FALSE}
+library(tidyverse)
+theme_set(theme_classic(base_size = 16))
+```
+
+Need to set `guess_max` to a high value so that the columns are correctly
+parsed. Using on the first 1000 rows, readr erroneously guesses that some
+columns are logical.
+
+```{r data, message=FALSE}
+big_epa_cars <- readr::read_csv("data/big_epa_cars.csv", guess_max = 50000)
+```
+
+## What brand of van should I buy?
+
+The EPA's [Greenhouse Gas Rating][ghg] is a scale from 1 (worst) to 10 (best).
+
+[ghg]: https://www.epa.gov/greenvehicles/greenhouse-gas-rating
+
+```{r explore}
+big_epa_cars %>%
+  count(VClass)
+
+summary(big_epa_cars$year)
+# https://www.epa.gov/greenvehicles/greenhouse-gas-rating
+mean(big_epa_cars$ghgScore == -1) # NA
+summary(big_epa_cars$ghgScore[big_epa_cars$ghgScore != -1])
+
+big_epa_cars %>%
+  filter(stringr::str_detect(VClass, "[Vv]an", ),
+         year > 2017) %>%
+  count(make, VClass)
+```
+
+```{r vans}
+big_epa_cars %>%
+  filter(stringr::str_detect(VClass, "[Vv]an", ),
+         year > 2017,
+         ghgScore != -1) %>%
+  mutate(label = stringr::str_c(make, model, year, sep = "-"),
+         label = make) %>%
+  ggplot(aes(x = youSaveSpend, y = ghgScore)) +
+  geom_text(aes(label = label), size = 5,
+            position = position_jitter(width = 1, height = 1, seed = NULL)) +
+  labs(x = "Gas savings over 5 years compared to average car",
+       y = "(worse <--) EPA Greenhouse Gas Rating (--> better)",
+       title = "What brand of van should I buy?")
+```
