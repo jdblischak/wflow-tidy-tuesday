@@ -497,10 +497,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjdblischakwflowtidytuesdaytree8cd0d526c9720cd2cb3835ef042ad60e73be2480targetblank8cd0d52a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jdblischak/wflow-tidy-tuesday/tree/8cd0d526c9720cd2cb3835ef042ad60e73be2480" target="_blank">8cd0d52</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjdblischakwflowtidytuesdaytree6749e2354edd9d5f8d247b1f3b28d2f5eb82ebe2targetblank6749e23a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jdblischak/wflow-tidy-tuesday/tree/6749e2354edd9d5f8d247b1f3b28d2f5eb82ebe2" target="_blank">6749e23</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjdblischakwflowtidytuesdaytree8cd0d526c9720cd2cb3835ef042ad60e73be2480targetblank8cd0d52a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjdblischakwflowtidytuesdaytree6749e2354edd9d5f8d247b1f3b28d2f5eb82ebe2targetblank6749e23a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -547,6 +547,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jdblischak/wflow-tidy-tuesday/blob/6749e2354edd9d5f8d247b1f3b28d2f5eb82ebe2/analysis/2019-10-15-big-mtcars.Rmd" target="_blank">6749e23</a>
+</td>
+<td>
+John Blischak
+</td>
+<td>
+2019-10-17
+</td>
+<td>
+Add analysis with only internal combustion engines
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jdblischak/wflow-tidy-tuesday/147329013611a110d13d49f56f885e963640a1ee/docs/2019-10-15-big-mtcars.html" target="_blank">1473290</a>
+</td>
+<td>
+John Blischak
+</td>
+<td>
+2019-10-17
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -705,11 +739,11 @@ mean(big_epa_cars$ghgScore == -1) # NA</code></pre>
          year &gt; 2017,
          ghgScore != -1) %&gt;%
   mutate(name = str_c(make, model, year, sep = &quot;-&quot;),
-         hybrid = if_else(str_detect(atvType, &quot;[Hh]ybrid&quot;),
+         engine = if_else(str_detect(atvType, &quot;[Hh]ybrid&quot;),
                           &quot;hybrid&quot;, &quot;ICE&quot;, missing = &quot;ICE&quot;)) %&gt;%
-  select(name, make, model, year, VClass, youSaveSpend, ghgScore, hybrid)</code></pre>
-<pre class="r"><code>ggplot(vans, aes(x = youSaveSpend, y = ghgScore)) +
-  geom_text(aes(label = make, color = hybrid), size = 5,
+  select(name, make, model, year, VClass, youSaveSpend, ghgScore, engine)</code></pre>
+<pre class="r"><code>p &lt;- ggplot(vans, aes(x = youSaveSpend, y = ghgScore)) +
+  geom_text(aes(label = make, color = engine), size = 5,
             position = position_jitter(width = 1, height = 1, seed = NULL)) +
   labs(x = &quot;Gas savings over 5 years compared to average car&quot;,
        y = &quot;(worse &lt;--) EPA Greenhouse Gas Rating (--&gt; better)&quot;,
@@ -717,7 +751,8 @@ mean(big_epa_cars$ghgScore == -1) # NA</code></pre>
   scale_color_brewer(name = &quot;Engine&quot;,
                      labels = c(&quot;Hybrid&quot;, &quot;Internal Combustion&quot;),
                      palette = &quot;Dark2&quot;) +
-  theme(legend.position = c(0.25, 0.75))</code></pre>
+  theme(legend.position = c(0.25, 0.75))
+p</code></pre>
 <p><img src="figure/2019-10-15-big-mtcars.Rmd/vans-1.png" width="768" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-vans-1">
@@ -741,6 +776,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jdblischak/wflow-tidy-tuesday/blob/147329013611a110d13d49f56f885e963640a1ee/docs/figure/2019-10-15-big-mtcars.Rmd/vans-1.png" target="_blank">1473290</a>
+</td>
+<td>
+John Blischak
+</td>
+<td>
+2019-10-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jdblischak/wflow-tidy-tuesday/blob/a4d8491ef64c84818f27f15671575dd5c4d6b05a/docs/figure/2019-10-15-big-mtcars.Rmd/vans-1.png" target="_blank">a4d8491</a>
@@ -782,6 +828,158 @@ John Blischak
 5 Ford-Transit T150 Wagon FFV-20… Vans, Passenger Ty…        -6000        2
 6 Ford-Transit T150 Wagon-2019    Vans, Passenger Ty…        -6000        2</code></pre>
 <p>No, they are all passenger vans.</p>
+<p>Limiting the analysis to internal combustion engines, there is a big tie between Chrysler, Honda, and Toyata (the graph has random jitter to be able to read the names):</p>
+<pre class="r"><code>p %+% (vans %&gt;% filter(engine == &quot;ICE&quot;)) + theme(legend.position = &quot;none&quot;)</code></pre>
+<p><img src="figure/2019-10-15-big-mtcars.Rmd/ice-only-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>vans %&gt;%
+  filter(engine == &quot;ICE&quot;, youSaveSpend &gt; -2000, ghgScore &gt; 3) %&gt;%
+  knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">name</th>
+<th align="left">make</th>
+<th align="left">model</th>
+<th align="right">year</th>
+<th align="left">VClass</th>
+<th align="right">youSaveSpend</th>
+<th align="right">ghgScore</th>
+<th align="left">engine</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Honda-Odyssey-2018</td>
+<td align="left">Honda</td>
+<td align="left">Odyssey</td>
+<td align="right">2018</td>
+<td align="left">Minivan - 2WD</td>
+<td align="right">-1750</td>
+<td align="right">4</td>
+<td align="left">ICE</td>
+</tr>
+<tr class="even">
+<td align="left">Honda-Odyssey-2018</td>
+<td align="left">Honda</td>
+<td align="left">Odyssey</td>
+<td align="right">2018</td>
+<td align="left">Minivan - 2WD</td>
+<td align="right">-1750</td>
+<td align="right">4</td>
+<td align="left">ICE</td>
+</tr>
+<tr class="odd">
+<td align="left">Chrysler-Pacifica-2018</td>
+<td align="left">Chrysler</td>
+<td align="left">Pacifica</td>
+<td align="right">2018</td>
+<td align="left">Minivan - 2WD</td>
+<td align="right">-1750</td>
+<td align="right">4</td>
+<td align="left">ICE</td>
+</tr>
+<tr class="even">
+<td align="left">Chrysler-Pacifica-2018</td>
+<td align="left">Chrysler</td>
+<td align="left">Pacifica</td>
+<td align="right">2018</td>
+<td align="left">Minivan - 2WD</td>
+<td align="right">-1750</td>
+<td align="right">4</td>
+<td align="left">ICE</td>
+</tr>
+<tr class="odd">
+<td align="left">Toyota-Sienna 2WD-2018</td>
+<td align="left">Toyota</td>
+<td align="left">Sienna 2WD</td>
+<td align="right">2018</td>
+<td align="left">Minivan - 2WD</td>
+<td align="right">-1750</td>
+<td align="right">4</td>
+<td align="left">ICE</td>
+</tr>
+<tr class="even">
+<td align="left">Honda-Odyssey-2019</td>
+<td align="left">Honda</td>
+<td align="left">Odyssey</td>
+<td align="right">2019</td>
+<td align="left">Minivan - 2WD</td>
+<td align="right">-1750</td>
+<td align="right">4</td>
+<td align="left">ICE</td>
+</tr>
+<tr class="odd">
+<td align="left">Honda-Odyssey-2019</td>
+<td align="left">Honda</td>
+<td align="left">Odyssey</td>
+<td align="right">2019</td>
+<td align="left">Minivan - 2WD</td>
+<td align="right">-1750</td>
+<td align="right">4</td>
+<td align="left">ICE</td>
+</tr>
+<tr class="even">
+<td align="left">Chrysler-Pacifica-2019</td>
+<td align="left">Chrysler</td>
+<td align="left">Pacifica</td>
+<td align="right">2019</td>
+<td align="left">Minivan - 2WD</td>
+<td align="right">-1750</td>
+<td align="right">4</td>
+<td align="left">ICE</td>
+</tr>
+<tr class="odd">
+<td align="left">Chrysler-Pacifica-2019</td>
+<td align="left">Chrysler</td>
+<td align="left">Pacifica</td>
+<td align="right">2019</td>
+<td align="left">Minivan - 2WD</td>
+<td align="right">-1750</td>
+<td align="right">4</td>
+<td align="left">ICE</td>
+</tr>
+<tr class="even">
+<td align="left">Toyota-Sienna 2WD-2019</td>
+<td align="left">Toyota</td>
+<td align="left">Sienna 2WD</td>
+<td align="right">2019</td>
+<td align="left">Minivan - 2WD</td>
+<td align="right">-1750</td>
+<td align="right">4</td>
+<td align="left">ICE</td>
+</tr>
+<tr class="odd">
+<td align="left">Chrysler-Pacifica-2020</td>
+<td align="left">Chrysler</td>
+<td align="left">Pacifica</td>
+<td align="right">2020</td>
+<td align="left">Minivan - 2WD</td>
+<td align="right">-1750</td>
+<td align="right">4</td>
+<td align="left">ICE</td>
+</tr>
+<tr class="even">
+<td align="left">Chrysler-Voyager-2020</td>
+<td align="left">Chrysler</td>
+<td align="left">Voyager</td>
+<td align="right">2020</td>
+<td align="left">Minivan - 2WD</td>
+<td align="right">-1750</td>
+<td align="right">4</td>
+<td align="left">ICE</td>
+</tr>
+<tr class="odd">
+<td align="left">Honda-Odyssey-2020</td>
+<td align="left">Honda</td>
+<td align="left">Odyssey</td>
+<td align="right">2020</td>
+<td align="left">Minivan - 2WD</td>
+<td align="right">-1750</td>
+<td align="right">4</td>
+<td align="left">ICE</td>
+</tr>
+</tbody>
+</table>
 <p>And here is a full table of all the vans that were included.</p>
 <pre class="r"><code>vans %&gt;%
   arrange(desc(youSaveSpend), desc(ghgScore)) %&gt;%
@@ -796,7 +994,7 @@ John Blischak
 <th align="left">VClass</th>
 <th align="right">youSaveSpend</th>
 <th align="right">ghgScore</th>
-<th align="left">hybrid</th>
+<th align="left">engine</th>
 </tr>
 </thead>
 <tbody>
