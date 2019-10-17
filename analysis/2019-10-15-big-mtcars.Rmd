@@ -30,6 +30,7 @@ fewer greenhouse gases.
 ```{r pkgs, message=FALSE}
 library(tidyverse)
 theme_set(theme_classic(base_size = 16))
+library(stringr)
 ```
 
 Need to set `guess_max` to a high value so that the columns are correctly
@@ -56,32 +57,41 @@ mean(big_epa_cars$ghgScore == -1) # NA
 summary(big_epa_cars$ghgScore[big_epa_cars$ghgScore != -1])
 
 big_epa_cars %>%
-  filter(stringr::str_detect(VClass, "[Vv]an", ),
+  filter(str_detect(VClass, "[Vv]an", ),
          year > 2017) %>%
   count(make, VClass)
 ```
 
-```{r vans}
-big_epa_cars %>%
-  filter(stringr::str_detect(VClass, "[Vv]an"),
+```{r subset}
+vans <-  big_epa_cars %>%
+  filter(str_detect(VClass, "[Vv]an"),
          year > 2017,
          ghgScore != -1) %>%
-  ggplot(aes(x = youSaveSpend, y = ghgScore)) +
-  geom_text(aes(label = make), size = 5,
+  mutate(name = str_c(make, model, year, sep = "-"),
+         hybrid = if_else(str_detect(atvType, "[Hh]ybrid"),
+                          "hybrid", "ICE", missing = "ICE")) %>%
+  select(name, make, model, year, VClass, youSaveSpend, ghgScore, hybrid)
+```
+
+
+```{r vans}
+ggplot(vans, aes(x = youSaveSpend, y = ghgScore)) +
+  geom_text(aes(label = make, color = hybrid), size = 5,
             position = position_jitter(width = 1, height = 1, seed = NULL)) +
   labs(x = "Gas savings over 5 years compared to average car",
        y = "(worse <--) EPA Greenhouse Gas Rating (--> better)",
-       title = "What brand of van should I buy?")
+       title = "What brand of van should I buy?") +
+  scale_color_brewer(name = "Engine",
+                     labels = c("Hybrid", "Internal Combustion"),
+                     palette = "Dark2") +
+  theme(legend.position = c(0.25, 0.75))
 ```
 
 What are the 3 Chrysler vans at the top right of the graph?
 
-```{r}
-big_epa_cars %>%
-  filter(stringr::str_detect(VClass, "[Vv]an"),
-         year > 2017,
-         ghgScore != -1) %>%
-  mutate(name = stringr::str_c(make, model, year, sep = "-")) %>%
+```{r chrysler}
+vans %>%
+  mutate(name = str_c(make, model, year, sep = "-")) %>%
   filter(youSaveSpend > 0, ghgScore > 8) %>%
   select(name, youSaveSpend, ghgScore)
 ```
@@ -90,3 +100,26 @@ Oof. The cheapest model of a [2020 Chrysler Pacifica Hybrid][pacifica] costs
 ~$40K.
 
 [pacifica]: https://www.chrysler.com/bmo.pacifica_hybrid.2019.html#/models/2020/pacifica_hybrid
+
+Ford sells both [passenger][passenger] vans and [cargo][cargo] vans. Could the
+poor performance of the Ford vans in these metrics be due to the fact that they
+are all cargo vans?
+
+[cargo]: https://www.ford.com/commercial-trucks/transit-connect-cargo-van/
+[passenger]: https://www.ford.com/trucks/transit-connect-passenger-van-wagon/
+
+```{r ford}
+vans %>%
+  filter(make == "Ford") %>%
+  select(name, VClass, youSaveSpend, ghgScore)
+```
+
+No, they are all passenger vans.
+
+And here is a full table of all the vans that were included.
+
+```{r table}
+vans %>%
+  arrange(desc(youSaveSpend), desc(ghgScore)) %>%
+  knitr::kable()
+```
