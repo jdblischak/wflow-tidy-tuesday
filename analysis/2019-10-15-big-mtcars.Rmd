@@ -68,15 +68,15 @@ vans <-  big_epa_cars %>%
          year > 2017,
          ghgScore != -1) %>%
   mutate(name = str_c(make, model, year, sep = "-"),
-         hybrid = if_else(str_detect(atvType, "[Hh]ybrid"),
+         engine = if_else(str_detect(atvType, "[Hh]ybrid"),
                           "hybrid", "ICE", missing = "ICE")) %>%
-  select(name, make, model, year, VClass, youSaveSpend, ghgScore, hybrid)
+  select(name, make, model, year, VClass, youSaveSpend, ghgScore, engine)
 ```
 
 
 ```{r vans}
-ggplot(vans, aes(x = youSaveSpend, y = ghgScore)) +
-  geom_text(aes(label = make, color = hybrid), size = 5,
+p <- ggplot(vans, aes(x = youSaveSpend, y = ghgScore)) +
+  geom_text(aes(label = make, color = engine), size = 5,
             position = position_jitter(width = 1, height = 1, seed = NULL)) +
   labs(x = "Gas savings over 5 years compared to average car",
        y = "(worse <--) EPA Greenhouse Gas Rating (--> better)",
@@ -85,6 +85,7 @@ ggplot(vans, aes(x = youSaveSpend, y = ghgScore)) +
                      labels = c("Hybrid", "Internal Combustion"),
                      palette = "Dark2") +
   theme(legend.position = c(0.25, 0.75))
+p
 ```
 
 What are the 3 Chrysler vans at the top right of the graph?
@@ -115,6 +116,20 @@ vans %>%
 ```
 
 No, they are all passenger vans.
+
+Limiting the analysis to internal combustion engines, there is a big tie
+between Chrysler, Honda, and Toyata (the graph has random jitter to be able
+to read the names):
+
+```{r ice-only}
+p %+% (vans %>% filter(engine == "ICE")) + theme(legend.position = "none")
+```
+
+```{r table-top-ice}
+vans %>%
+  filter(engine == "ICE", youSaveSpend > -2000, ghgScore > 3) %>%
+  knitr::kable()
+```
 
 And here is a full table of all the vans that were included.
 
